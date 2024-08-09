@@ -6,7 +6,7 @@
 /*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 19:35:55 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/03/20 18:13:45 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/09 14:54:09 by kkuhn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,8 @@ char	**ft_split2(char const *s, char c, int *j, char **strarray)
 char	**ft_split(char const *s, char c)
 {
 	char	**strarray;
-	int		i;
 	int		j;
 
-	i = 0;
 	j = 0;
 	if (!s)
 		return (NULL);

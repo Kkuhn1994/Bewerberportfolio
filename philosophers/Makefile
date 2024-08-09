@@ -13,8 +13,8 @@ LIBFT = libft/ft_toupper.o libft/ft_tolower.o libft/ft_substr.o libft/ft_strtrim
        libft/ft_isascii.o libft/ft_isalpha.o libft/ft_isalnum.o libft/ft_calloc.o \
        libft/ft_bzero.o libft/ft_atoi.o 
 
-FLAGS = -Wall -Wextra -Werror
-PROJECTFILES = philo.c utils.c
+FLAGS = -Wall -Wextra -Werror -g -pthread
+PROJECTFILES = philo.c utils.c actions.c init.c
 
 philo: ${PROJECTFILES} $(LIBFT)
 	cc ${PROJECTFILES} ${CFLAGS} -L./libft -lft
@@ -23,5 +23,8 @@ fclean:
 	rm -rf a.out
 
 re:
+	make -C ./libft fclean
+	make -C ./libft all
+	make -C ./libft bonus
 	make fclean
 	make all
