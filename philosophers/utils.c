@@ -1,35 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/12 14:01:41 by kkuhn             #+#    #+#             */
+/*   Updated: 2024/08/12 14:16:13 by kkuhn            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void exit_programm(char *errormessage)
+void	exit_programm(char *errormessage)
 {
 	ft_putstr_fd(errormessage, 2);
 	exit(1);
 }
 
-void write_message(char *action, t_philo *philo)
+void	write_message(char *action, t_philo *philo, char *color)
 {
-	char *time;
-	char *id_string;
+	char	*id_string;
 
-	// FILE *file = fopen("philosopher_log.txt", "a"); // Change the file name as needed
-    // if (file == NULL) {
-    //     perror("Error opening file");
-    //     return;
-    // }
-
-    // Print initialization information to the file
-    // fprintf(file, "Philosopher %d initialized:\n", philo->id);
-    // fprintf(file, "  Left Fork Address: %p\n", (void*)philo->l);
-    // fprintf(file, "  Right Fork Address: %p\n", (void*)philo->r);
-    // fprintf(file, "  Start Time: %ld\n", philo->start_time);
-    // fprintf(file, "  Time to Die: %ld\n", philo->time_to_die);
-    // fprintf(file, "  Time to Eat: %ld\n", philo->time_to_eat);
-    // fprintf(file, "  Time to Sleep: %ld\n", philo->time_to_sleep);
-    // fprintf(file, "  Number of Meals: %li\n", philo->num_meals);
-    // fprintf(file, "  Data Pointer: %p\n\n", (void*)philo->data);	
-	// fclose(file);
 	pthread_mutex_lock(&philo->data->write);
-	pthread_mutex_lock(&philo->arbitrator);
+	ft_putstr_fd(color, 1);
 	ft_putstr_fd("philo", 1);
 	ft_putstr_fd(" ", 1);
 	id_string = ft_itoa(philo->id);
@@ -40,15 +34,14 @@ void write_message(char *action, t_philo *philo)
 	ft_putstr_fd(" ", 1);
 	ft_putstr_fd(action, 1);
 	ft_putstr_fd("\n", 1);
-	pthread_mutex_unlock(&philo->arbitrator);
+	ft_putstr_fd(COLOR_RESET, 1);
 	pthread_mutex_unlock(&philo->data->write);
 }
 
-
 time_t	gettime(void)
 {
-	struct		timeval tv;
-	time_t		time;
+	struct timeval	tv;
+	time_t			time;
 
 	gettimeofday(&tv, NULL);
 	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
@@ -62,18 +55,27 @@ void	free_function(t_data *data)
 	free(data->threads);
 }
 
-int	check(t_data data)
+int	check(t_data *data)
 {
-	if (data.num_philo < 0 || data.num_philo > 200)
+	if (data->num_philo < 0 || data->num_philo > 200)
 	{
 		ft_putstr_fd("number philo invalid", 1);
 		return (1);
 	}
-	if (data.time_to_die < 0 || data.time_to_eat < 0 || data.time_to_sleep < 0)
+	if (data->num_philo == 1)
+	{
+		init_threads(data);
+		pthread_mutex_init(&data->forks[0], NULL);
+		pthread_create(&data->threads[0], 0, &single_philo, data);
+		pthread_join(data->threads[0], NULL);
+		pthread_mutex_destroy(&data->forks[0]);
+		return (1);
+	}
+	if (data->time_to_die < 0 || data->time_to_eat < 0
+		|| data->time_to_sleep < 0)
 	{
 		ft_putstr_fd("time invalid", 1);
 		return (1);
 	}
 	return (0);
 }
-

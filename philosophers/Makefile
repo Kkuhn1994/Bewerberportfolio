@@ -1,5 +1,7 @@
 all: philo
 
+NAME = philo
+
 LIBFT = libft/ft_toupper.o libft/ft_tolower.o libft/ft_substr.o libft/ft_strtrim.o \
        libft/ft_strrchr.o libft/ft_strnstr.o libft/ft_strncmp.o libft/ft_strmapi.o \
        libft/ft_strlen.o libft/ft_strlcpy.o libft/ft_strlcat.o libft/ft_strjoin.o \
@@ -14,10 +16,13 @@ LIBFT = libft/ft_toupper.o libft/ft_tolower.o libft/ft_substr.o libft/ft_strtrim
        libft/ft_bzero.o libft/ft_atoi.o 
 
 FLAGS = -Wall -Wextra -Werror -g -pthread
-PROJECTFILES = philo.c utils.c actions.c init.c
+PROJECTFILES = philo.c utils.c actions.c init.c single_philo.c
 
 philo: ${PROJECTFILES} $(LIBFT)
-	cc ${PROJECTFILES} ${CFLAGS} -L./libft -lft
+	cc ${PROJECTFILES} ${CFLAGS} -L./libft -lft -o philo
+
+clean:
+	rm -rf a.out
 
 fclean:
 	rm -rf a.out
