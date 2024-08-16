@@ -6,7 +6,7 @@
 /*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 14:14:08 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/08/12 14:14:19 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/15 17:35:15 by kkuhn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	check_argument_valid(int argc, char *argv[])
 	{
 		j = -1;
 		while (argv[i][++ j] != 0)
-			if (isdigit((int)argv[i][j]) == 0)
+			if (ft_isdigit((int)argv[i][j]) == 0)
 				exit_programm("argument is invalid");
 	}
 	return (0);
@@ -48,7 +48,7 @@ int	init(t_data *data, int argc, char *argv[])
 
 void	init_threads(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	data->forks = malloc ((data->num_philo) * sizeof(pthread_mutex_t));
@@ -74,7 +74,7 @@ void	init_threads(t_data *data)
 
 void	mutex_init(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->arbitrator2, NULL);

@@ -6,7 +6,7 @@
 /*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:30:03 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/08/12 14:15:58 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/15 18:52:08 by kkuhn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	*routine(void *input)
 
 void	*grimreaper(void *input)
 {
-	int		i;
+	size_t	i;
 	t_data	*data;
 	int		finished;
 
@@ -81,7 +81,7 @@ void	*grimreaper(void *input)
 
 void	threads(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	init_threads(data);
 	i = -1;
@@ -104,7 +104,6 @@ void	threads(t_data *data)
 	}
 	pthread_mutex_destroy(&data->write);
 	pthread_mutex_destroy(&data->arbitrator2);
-	free_function(data);
 }
 
 int	main(int argc, char *argv[])
@@ -114,8 +113,8 @@ int	main(int argc, char *argv[])
 	data.start_time = gettime() + 1000;
 	if (init(&data, argc, argv) != 0)
 		exit_programm("not enough, too many or wrong arguments");
-	if (check(&data) != 0)
-		return (0);
-	threads(&data);
+	if (check(&data) == 0)
+		threads(&data);
+	free_function(&data);
 	return (0);
 }

@@ -6,18 +6,20 @@
 /*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 14:05:36 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/08/12 14:15:26 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/15 17:36:38 by kkuhn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
+# include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h> 
 # include <pthread.h>
-# include "libft/libft.h"
 # include <fcntl.h>
 # include <sys/time.h>
+# include <sys/wait.h>
+# include <limits.h>
 # define COLOR_RED		"\033[31m"
 # define COLOR_GREEN	"\033[32m"
 # define COLOR_YELLOW	"\033[33m"
@@ -42,7 +44,7 @@ typedef struct philo_t{
 	time_t			start_time;
 	int				numphilo;
 	int				philo_died;
-	int				nrmeals;
+	size_t			nrmeals;
 	int				finished;
 	pthread_mutex_t	arbitrator;
 }	t_philo;
@@ -78,5 +80,11 @@ void	*single_philo(void *input);
 int		check_death(t_philo *philo);
 void	mutex_init(t_data *data);
 void	think(t_philo *philo);
+int		ft_atoi(const char *number);
+int		ft_isdigit(int a);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putnbr_fd(int number, int fd);
+char	*ft_itoa(int n);
+size_t	ft_strlen(char const *str);
 
 #endif 

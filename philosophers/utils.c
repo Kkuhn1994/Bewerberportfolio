@@ -6,7 +6,7 @@
 /*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 14:01:41 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/08/12 14:16:13 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/15 20:34:08 by kkuhn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	free_function(t_data *data)
 
 int	check(t_data *data)
 {
-	if (data->num_philo < 0 || data->num_philo > 200)
+	if (data->num_philo > 200)
 	{
 		ft_putstr_fd("number philo invalid", 1);
 		return (1);
@@ -66,9 +66,11 @@ int	check(t_data *data)
 	{
 		init_threads(data);
 		pthread_mutex_init(&data->forks[0], NULL);
+		pthread_mutex_init(&data->write, NULL);
 		pthread_create(&data->threads[0], 0, &single_philo, data);
 		pthread_join(data->threads[0], NULL);
 		pthread_mutex_destroy(&data->forks[0]);
+		pthread_mutex_destroy(&data->write);
 		return (1);
 	}
 	if (data->time_to_die < 0 || data->time_to_eat < 0
