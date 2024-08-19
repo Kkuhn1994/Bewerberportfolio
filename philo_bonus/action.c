@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   action.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kevin <kevin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 18:09:57 by kkuhn             #+#    #+#             */
-/*   Updated: 2024/08/14 18:10:18 by kkuhn            ###   ########.fr       */
+/*   Updated: 2024/08/18 21:53:58 by kevin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	sleeptime(t_philo *philo)
+void sleeptime(t_philo *philo)
 {
 	philo->start_sleep = gettime();
 	write_message("sleeps", philo, COLOR_CYAN);
@@ -20,17 +20,16 @@ void	sleeptime(t_philo *philo)
 		usleep(100);
 }
 
-void	think(t_philo *philo)
+void think(t_philo *philo)
 {
 	philo->start_think = gettime();
-	philo->time_to_think = (philo->time_to_die
-			- (gettime() - philo->start_eat)) * 0.5;
+	philo->time_to_think = (philo->time_to_die - (gettime() - philo->start_eat)) * 0.2;
 	write_message("thinks", philo, COLOR_YELLOW);
 	while (gettime() - philo->start_think < philo->time_to_think)
 		usleep(100);
 }
 
-void	take_forks(t_philo *philo)
+void take_forks(t_philo *philo)
 {
 	sem_wait(philo->data->arbitrator);
 	sem_wait(philo->data->forks);
@@ -40,7 +39,7 @@ void	take_forks(t_philo *philo)
 	sem_post(philo->data->arbitrator);
 }
 
-void	eating(t_philo *philo)
+void eating(t_philo *philo)
 {
 	philo->start_eat = gettime();
 	write_message("eats", philo, COLOR_MAGENTA);
@@ -48,7 +47,7 @@ void	eating(t_philo *philo)
 		usleep(100);
 }
 
-void	drop_forks(t_philo *philo)
+void drop_forks(t_philo *philo)
 {
 	sem_post(philo->data->forks);
 	write_message("dropped fork", philo, COLOR_BLUE);
