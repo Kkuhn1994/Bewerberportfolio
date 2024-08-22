@@ -1,45 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_and_free_map.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/21 15:33:43 by kkuhn             #+#    #+#             */
+/*   Updated: 2024/08/21 18:37:08 by kkuhn            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-int *count_ints(int *old_array, int nr_newline)
+char	*ft_strjoin3(char *s1, char *s2)
 {
-	int *newarray;
-	int i;
+	int		i;
+	int		j;
+	char	*result;
 
 	i = 0;
-	newarray = malloc(nr_newline * sizeof(int));
-	while (i < nr_newline - 1)
+	j = 0;
+	if (s1 == 0)
+		return (ft_strdup(s2));
+	result = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	while (s1[i] != 0)
 	{
-		newarray[i] = old_array[i];
-		i++;
+		result[i] = s1[i];
+		i ++;
 	}
-	newarray[i] = 0;
-	free(old_array);
-	return newarray;
+	while (s2[j] != 0)
+	{
+		result[i] = s2[j];
+		i ++;
+		j ++;
+	}
+	result[i] = 0;
+	free(s1);
+	return (result);
 }
 
-int is_rectangular(int *int_per_line, int size)
+char	*readfile(char *file, t_basic mlb)
 {
-	int i;
-	int store;
+	int		fd;
+	int		buffersize;
+	char	buffer[2];
+	char	*map;
 
-	i = 1;
-	store = int_per_line[0];
-	while (i < size - 1)
+	map = 0;
+	fd = open(file, O_RDONLY);
+	buffersize = read(fd, buffer, 1);
+	buffer[1] = 0;
+	while (buffersize > 0)
 	{
-		if (int_per_line[i] != store)
-			return 1;
-		i++;
+		map = ft_strjoin3(map, buffer);
+		buffersize = read(fd, buffer, 1);
 	}
-	return 0;
+	return (map);
 }
 
-void free_map(long double **map)
+void	free_map(long double **map)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (map == 0)
-		return;
+		return ;
 	while (map[i] != 0)
 	{
 		free(map[i]);
@@ -48,13 +73,28 @@ void free_map(long double **map)
 	free(map);
 }
 
-void free_map2(matrix **map)
+void	free_map2(t_matrix **map)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (map == 0)
-		return;
+		return ;
+	while (map[i] != 0)
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
+
+void	free_map3(char **map)
+{
+	int	i;
+
+	i = 0;
+	if (map == 0)
+		return ;
 	while (map[i] != 0)
 	{
 		free(map[i]);

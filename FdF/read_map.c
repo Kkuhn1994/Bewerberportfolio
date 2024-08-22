@@ -1,138 +1,103 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_map.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkuhn <kkuhn@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/21 15:18:06 by kkuhn             #+#    #+#             */
+/*   Updated: 2024/08/21 17:45:28 by kkuhn            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-char *ft_strjoin2(char *s1, char *s2)
+t_matrix	**alloc(char **splitted_map, t_basic *mlb, int i)
 {
-	char *result;
-	int i;
+	int			j;
+	char		**split;
+	t_matrix	**map;
 
+	while (splitted_map[i] != 0)
+		i ++;
+	map = malloc (i * sizeof(t_matrix *));
+	mlb->map = malloc (i * sizeof(t_matrix *));
+	mlb->int_per_line = malloc (i * sizeof(int));
+	mlb->nr_line = i + 1;
 	i = 0;
-	if (s1 == 0)
-		return (strdup(s2));
-	result = malloc(strlen(s1) + 2);
-	while (s1[i] != 0)
+	while (splitted_map[i] != 0)
 	{
-		result[i] = s1[i];
-		i++;
+		j = 0;
+		split = ft_split(splitted_map[i], ' ');
+		while (split[j] != 0)
+			j ++;
+		map[i] = malloc (j * sizeof(t_matrix));
+		mlb->map[i] = malloc (j * sizeof(t_matrix));
+		mlb->int_per_line[i] = j;
+		i ++;
+		free_map3(split);
 	}
-	result[i] = s2[0];
-	result[i + 1] = 0;
-	free(s1);
-	return result;
+	return (map);
 }
 
-long double *ft_join_double_ptr(long double *ptr1, long double ptr2, int arraysize)
+char	*color(char *string)
 {
-	long double *joined;
-	int i;
+	char	*color;
 
-	i = 0;
-	if (ptr1 == 0)
-	{
-		joined = malloc(sizeof(long double));
-		joined[0] = ptr2;
-		return joined;
-	}
-	joined = malloc(arraysize * sizeof(long double));
-	// printf("%d", arraysize);
-	while (i < arraysize - 1)
-	{
-
-		joined[i] = ptr1[i];
-		i++;
-	}
-	joined[i] = ptr2;
-	free(ptr1);
-	return joined;
+	color = ft_strnstr(string, ",", ft_strlen(string));
+	if (color == NULL)
+		return ("0xFFFFFF");
+	return (&color[1]);
 }
 
-long double *gnl(int fd, int i, int *int_per_line)
+t_matrix	**init_values(char **splittedmap, t_basic *mlb, t_matrix **map)
 {
-	char *line_chars;
-	long double *line;
-	char buffer[1];
-
-	line_chars = 0;
-	line = 0;
-	while (read(fd, buffer, 1) != 0)
-	{
-		if (strncmp("\n", buffer, 1) == 0)
-			break;
-		else
-			line_chars = ft_strjoin2(line_chars, buffer);
-	}
-	if (line_chars == 0)
-		return 0;
-	while (line_chars[i] != 0)
-	{
-		// printf("%s\n", &line_chars[i]);
-		// printf("%d\n", atoi(&line_chars[i]));
-		*int_per_line += 1;
-		line = ft_join_double_ptr(line, (long double)atoi(&line_chars[i]), *int_per_line);
-		while (line_chars[i] == ' ')
-			i++;
-		while (line_chars[i] != ' ' && line_chars[i] != 0)
-			i++;
-	}
-	free(line_chars);
-	return line;
-}
-
-long double **loadmap(char *file, int **int_per_line, int *nr_line)
-{
-	int fd;
-	long double **map;
-	long double *line;
-	int i;
-
-	map = 0;
-	fd = open(file, O_RDONLY);
-	*nr_line = 1;
-	line = gnl(fd, 0, &int_per_line[0][0]);
-
-	i = 1;
-	map = 0;
-	while (line != 0)
-	{
-		*nr_line += 1;
-		int_per_line[0] = count_ints(int_per_line[0], *nr_line);
-		map = add_line(map, line);
-		line = gnl(fd, 0, &int_per_line[0][i]);
-		i++;
-	}
-	map = add_line(map, NULL);
-	if (is_rectangular(int_per_line[0], *nr_line) != 0)
-		return map;
-	free_map(map);
-	return 0;
-}
-
-long double **add_line(long double **map, long double *line)
-{
-	int i;
-	long double **map_with_added_line;
+	int		i;
+	int		j;
+	char	**split;
 
 	i = 0;
-	if (map == 0)
+	while (splittedmap[i] != 0)
 	{
-		map_with_added_line = malloc(sizeof(long double *));
-		map_with_added_line[0] = line;
-		line = 0;
-		return map_with_added_line;
+		j = 0;
+		split = ft_split(splittedmap[i], ' ');
+		while (split[j] != 0)
+		{
+			mlb->map[i][j] = ft_atoi(split[j]);
+			map[i][j].x = (long double)(-(mlb->int_per_line[0]
+						+ 1) / 2 + j + 1);
+			map[i][j].y = (long double)(mlb->nr_line / 2 - i - 1);
+			map[i][j].z = ft_atoi(split[j]);
+			map[i][j].color = color(split[j]);
+			j ++;
+		}
+		free_map3(split);
+		i ++;
 	}
-	while (map[i] != 0)
-		i++;
-	map_with_added_line = malloc((i + 2) * sizeof(long double *));
+	return (map);
+}
+
+t_matrix	**loadmap(char *file, t_basic *mlb)
+{
+	char		*map;
+	char		**splitted_map;
+	t_matrix	**xyzmap;
+	int			i;
+
 	i = 0;
-	while (map[i] != 0)
+	mlb->nr_p_line = INT_MAX;
+	map = readfile(file, mlb[0]);
+	splitted_map = ft_split(map, '\n');
+	xyzmap = alloc(splitted_map, mlb, 0);
+	xyzmap = init_values(splitted_map, mlb, xyzmap);
+	while (i < mlb->nr_line - 1)
 	{
-		map_with_added_line[i] = map[i];
-		map[i] = NULL;
-		i++;
+		if (mlb->int_per_line[i] < mlb->nr_p_line)
+			mlb->nr_p_line = mlb->int_per_line[i];
+		i ++;
 	}
-	free(map[i]);
+	i = 0;
 	free(map);
-	map_with_added_line[i] = line;
-	line = NULL;
-	map_with_added_line[i + 1] = NULL;
-	return (map_with_added_line);
+	free_map3(splitted_map);
+	return (xyzmap);
 }
